@@ -1,0 +1,26 @@
+# Environment / secrets
+.env
+.env.test
+.env.local
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.venv/
+venv/
+
+# Node / frontend (Phase 1 doesn't build this yet, but reserved)
+node_modules/
+.next/
+dist/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Misc
+*.db
+*.log
