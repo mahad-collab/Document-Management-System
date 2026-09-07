@@ -52,11 +52,11 @@ function DepartmentsBody() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-semibold text-slate-900">Departments</h1>
+      <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Departments</h1>
       {error && <ErrorBanner message={error} />}
 
       <Card>
-        <h2 className="mb-4 text-sm font-semibold text-slate-900">Create a department</h2>
+        <h2 className="mb-4 text-sm font-semibold text-slate-900 dark:text-slate-100">Create a department</h2>
         <form onSubmit={handleCreate} className="grid gap-4 sm:grid-cols-3">
           <div>
             <Label>Name</Label>
@@ -82,7 +82,7 @@ function DepartmentsBody() {
             <PrimaryButton type="submit" disabled={submitting}>
               {submitting ? "Creating…" : "Create department"}
             </PrimaryButton>
-            <p className="mt-2 text-xs text-slate-400">
+            <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">
               Creates a matching folder in SharePoint immediately — if that call fails, no department is created.
             </p>
           </div>
@@ -90,16 +90,16 @@ function DepartmentsBody() {
       </Card>
 
       <Card>
-        <h2 className="mb-4 text-sm font-semibold text-slate-900">All departments</h2>
+        <h2 className="mb-4 text-sm font-semibold text-slate-900 dark:text-slate-100">All departments</h2>
         {loadingDepartments ? (
-          <p className="text-sm text-slate-400">Loading…</p>
+          <p className="text-sm text-slate-400 dark:text-slate-500">Loading…</p>
         ) : departments.length === 0 ? (
-          <p className="text-sm text-slate-400">No departments yet.</p>
+          <p className="text-sm text-slate-400 dark:text-slate-500">No departments yet.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500">
+                <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500 dark:border-slate-700 dark:text-slate-400">
                   <th className="py-2 pr-4">Name</th>
                   <th className="py-2 pr-4">Code</th>
                   <th className="py-2 pr-4">SharePoint folder</th>
@@ -109,10 +109,10 @@ function DepartmentsBody() {
               </thead>
               <tbody>
                 {departments.map((d) => (
-                  <tr key={d.id} className="border-b border-slate-100">
-                    <td className="py-2 pr-4 font-medium text-slate-900">{d.name}</td>
-                    <td className="py-2 pr-4 text-slate-600">{d.code}</td>
-                    <td className="py-2 pr-4 font-mono text-xs text-slate-400">
+                  <tr key={d.id} className="border-b border-slate-100 dark:border-slate-800">
+                    <td className="py-2 pr-4 font-medium text-slate-900 dark:text-slate-100">{d.name}</td>
+                    <td className="py-2 pr-4 text-slate-600 dark:text-slate-300">{d.code}</td>
+                    <td className="py-2 pr-4 font-mono text-xs text-slate-400 dark:text-slate-500">
                       {d.sharepoint_item_id ? d.sharepoint_item_id.slice(0, 16) + "…" : "—"}
                     </td>
                     <td className="py-2 pr-4">

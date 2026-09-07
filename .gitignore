@@ -24,3 +24,5 @@ dist/
 # Misc
 *.db
 *.log
+backend/certs/
+frontend/.next-https/

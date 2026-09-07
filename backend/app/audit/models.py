@@ -37,6 +37,7 @@ class AuditAction(str, enum.Enum):
     FOLDER_UPDATE = "folder_update"
     USER_CREATE = "user_create"
     USER_UPDATE = "user_update"
+    USER_DELETE = "user_delete"
     ROLE_CHANGE = "role_change"
     PERMISSION_CHANGE = "permission_change"
     OCR_PROCESS = "ocr_process"

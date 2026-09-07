@@ -35,13 +35,19 @@ function AuditLogsBody() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-semibold text-slate-900">Audit Logs</h1>
+        <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Audit Logs</h1>
         {user!.is_super_admin && (
-          <div className="flex rounded-md border border-slate-300 bg-white p-0.5 text-sm">
-            <button onClick={() => setOrgWide(true)} className={`rounded px-3 py-1 ${orgWide ? "bg-slate-900 text-white" : "text-slate-600"}`}>
+          <div className="flex rounded-md border border-slate-300 bg-white p-0.5 text-sm dark:border-slate-600 dark:bg-slate-800">
+            <button
+              onClick={() => setOrgWide(true)}
+              className={`rounded px-3 py-1 ${orgWide ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900" : "text-slate-600 dark:text-slate-300"}`}
+            >
               Org-wide
             </button>
-            <button onClick={() => setOrgWide(false)} className={`rounded px-3 py-1 ${!orgWide ? "bg-slate-900 text-white" : "text-slate-600"}`}>
+            <button
+              onClick={() => setOrgWide(false)}
+              className={`rounded px-3 py-1 ${!orgWide ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900" : "text-slate-600 dark:text-slate-300"}`}
+            >
               This department
             </button>
           </div>
@@ -52,14 +58,14 @@ function AuditLogsBody() {
 
       <Card>
         {loading ? (
-          <p className="text-sm text-slate-400">Loading…</p>
+          <p className="text-sm text-slate-400 dark:text-slate-500">Loading…</p>
         ) : logs.length === 0 ? (
           <EmptyState message="No audit log entries match." />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500">
+                <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500 dark:border-slate-700 dark:text-slate-400">
                   <th className="py-2 pr-4">When</th>
                   <th className="py-2 pr-4">Action</th>
                   <th className="py-2 pr-4">Department</th>
@@ -69,14 +75,14 @@ function AuditLogsBody() {
               </thead>
               <tbody>
                 {logs.map((log) => (
-                  <tr key={log.id} className="border-b border-slate-100 align-top">
-                    <td className="whitespace-nowrap py-2 pr-4 text-slate-500">{formatDate(log.created_at)}</td>
-                    <td className="py-2 pr-4 font-medium text-slate-900">{log.action}</td>
-                    <td className="py-2 pr-4 text-slate-600">{deptName(log.department_id)}</td>
+                  <tr key={log.id} className="border-b border-slate-100 align-top dark:border-slate-800">
+                    <td className="whitespace-nowrap py-2 pr-4 text-slate-500 dark:text-slate-400">{formatDate(log.created_at)}</td>
+                    <td className="py-2 pr-4 font-medium text-slate-900 dark:text-slate-100">{log.action}</td>
+                    <td className="py-2 pr-4 text-slate-600 dark:text-slate-300">{deptName(log.department_id)}</td>
                     <td className="py-2 pr-4">
                       <Badge color={log.result === "success" ? "green" : "red"}>{log.result}</Badge>
                     </td>
-                    <td className="py-2 pr-4 text-slate-500">{log.details ?? "—"}</td>
+                    <td className="py-2 pr-4 text-slate-500 dark:text-slate-400">{log.details ?? "—"}</td>
                   </tr>
                 ))}
               </tbody>

@@ -159,7 +159,7 @@ function FolderBrowserBody() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Documents</h1>
+          <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Documents</h1>
           <Breadcrumb
             departmentName={selectedDepartment?.name ?? ""}
             stack={stack}
@@ -176,7 +176,7 @@ function FolderBrowserBody() {
       {error && <ErrorBanner message={error} />}
 
       <Card>
-        <h2 className="mb-3 text-sm font-semibold text-slate-900">Create {currentFolder ? "subfolder" : "folder"}</h2>
+        <h2 className="mb-3 text-sm font-semibold text-slate-900 dark:text-slate-100">Create {currentFolder ? "subfolder" : "folder"}</h2>
         <form onSubmit={handleCreateFolder} className="flex gap-2">
           <TextInput
             value={newFolderName}
@@ -192,22 +192,22 @@ function FolderBrowserBody() {
       </Card>
 
       {loading ? (
-        <p className="text-sm text-slate-400">Loading…</p>
+        <p className="text-sm text-slate-400 dark:text-slate-500">Loading…</p>
       ) : (
         <>
           {folders.length > 0 && (
             <Card>
-              <h2 className="mb-3 text-sm font-semibold text-slate-900">Folders</h2>
+              <h2 className="mb-3 text-sm font-semibold text-slate-900 dark:text-slate-100">Folders</h2>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
                 {folders.map((f) => (
-                  <div key={f.id} className="group flex items-center justify-between rounded-md border border-slate-200 px-3 py-2 text-sm">
-                    <button onClick={() => setStack([...stack, f])} className="truncate text-left text-slate-700 hover:underline">
+                  <div key={f.id} className="group flex items-center justify-between rounded-md border border-slate-200 px-3 py-2 text-sm dark:border-slate-700">
+                    <button onClick={() => setStack([...stack, f])} className="truncate text-left text-slate-700 hover:underline dark:text-slate-300">
                       📁 {f.name}
                     </button>
                     <button
                       onClick={() => handleArchiveFolder(f.id)}
                       title="Archive folder"
-                      className="ml-2 hidden text-xs text-slate-400 hover:text-red-600 group-hover:inline"
+                      className="ml-2 hidden text-xs text-slate-400 hover:text-red-600 group-hover:inline dark:text-slate-500 dark:hover:text-red-400"
                     >
                       ✕
                     </button>
@@ -220,7 +220,7 @@ function FolderBrowserBody() {
           {currentFolder ? (
             <Card>
               <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-sm font-semibold text-slate-900">
+                <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                   {showRecycleBin ? "Deleted documents" : "Documents"}
                 </h2>
               </div>
@@ -267,7 +267,7 @@ function Breadcrumb({
   onNavigate: (index: number) => void;
 }) {
   return (
-    <div className="mt-1 flex flex-wrap items-center gap-1 text-sm text-slate-500">
+    <div className="mt-1 flex flex-wrap items-center gap-1 text-sm text-slate-500 dark:text-slate-400">
       <button onClick={() => onNavigate(-1)} className="hover:underline">
         {departmentName}
       </button>
@@ -322,7 +322,7 @@ function UploadForm({ folderId, onUploaded }: { folderId: UUID; onUploaded: () =
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mb-4 rounded-md border border-dashed border-slate-300 p-4">
+    <form onSubmit={handleSubmit} className="mb-4 rounded-md border border-dashed border-slate-300 p-4 dark:border-slate-700">
       {error && <div className="mb-3"><ErrorBanner message={error} /></div>}
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
@@ -382,13 +382,13 @@ function DocumentRow({
   inRecycleBin: boolean;
 }) {
   return (
-    <div className="rounded-md border border-slate-200">
+    <div className="rounded-md border border-slate-200 dark:border-slate-700">
       <div className="flex flex-wrap items-center gap-3 px-4 py-3">
         <div className="min-w-0 flex-1">
-          <button onClick={onToggleExpand} className="truncate text-left text-sm font-medium text-slate-900 hover:underline">
+          <button onClick={onToggleExpand} className="truncate text-left text-sm font-medium text-slate-900 hover:underline dark:text-slate-100">
             {doc.name}
           </button>
-          <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-slate-400">
+          <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-slate-400 dark:text-slate-500">
             <span>{formatBytes(doc.file_size)}</span>
             <span>v{doc.current_version_number}</span>
             <span>{formatDate(doc.created_at)}</span>
@@ -403,7 +403,7 @@ function DocumentRow({
                 href={api.downloadUrl(doc.id)}
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
               >
                 Download
               </a>
@@ -415,7 +415,7 @@ function DocumentRow({
                   Retry OCR
                 </SecondaryButton>
               )}
-              <SecondaryButton onClick={onDelete} className="px-3 py-1.5 text-xs text-red-600">
+              <SecondaryButton onClick={onDelete} className="px-3 py-1.5 text-xs text-red-600 dark:text-red-400">
                 Delete
               </SecondaryButton>
             </>
@@ -424,7 +424,7 @@ function DocumentRow({
               <SecondaryButton onClick={onRestore} className="px-3 py-1.5 text-xs">
                 Restore
               </SecondaryButton>
-              <SecondaryButton onClick={onPermanentDelete} className="px-3 py-1.5 text-xs text-red-600">
+              <SecondaryButton onClick={onPermanentDelete} className="px-3 py-1.5 text-xs text-red-600 dark:text-red-400">
                 Delete permanently
               </SecondaryButton>
             </>
@@ -475,18 +475,18 @@ function VersionHistory({ documentId, onVersionUploaded }: { documentId: UUID; o
   }
 
   return (
-    <div className="border-t border-slate-100 bg-slate-50 px-4 py-3">
+    <div className="border-t border-slate-100 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-950">
       {error && <div className="mb-2"><ErrorBanner message={error} /></div>}
       {loading ? (
-        <p className="text-xs text-slate-400">Loading versions…</p>
+        <p className="text-xs text-slate-400 dark:text-slate-500">Loading versions…</p>
       ) : (
-        <ul className="space-y-1 text-xs text-slate-600">
+        <ul className="space-y-1 text-xs text-slate-600 dark:text-slate-300">
           {versions.map((v) => (
             <li key={v.id} className="flex items-center justify-between">
               <span>
                 v{v.version_number} — {v.change_description || "no description"} ({formatBytes(v.file_size)})
               </span>
-              <span className="text-slate-400">{formatDate(v.created_at)}</span>
+              <span className="text-slate-400 dark:text-slate-500">{formatDate(v.created_at)}</span>
             </li>
           ))}
         </ul>

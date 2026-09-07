@@ -54,8 +54,8 @@ function SearchBody() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-semibold text-slate-900">
-        Search {selectedDepartment && <span className="text-slate-400">— {selectedDepartment.name}</span>}
+      <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
+        Search {selectedDepartment && <span className="text-slate-400 dark:text-slate-500">— {selectedDepartment.name}</span>}
       </h1>
 
       <Card>
@@ -96,16 +96,16 @@ function SearchBody() {
 
       {results !== null && (
         <Card>
-          <h2 className="mb-3 text-sm font-semibold text-slate-900">{results.length} result{results.length === 1 ? "" : "s"}</h2>
+          <h2 className="mb-3 text-sm font-semibold text-slate-900 dark:text-slate-100">{results.length} result{results.length === 1 ? "" : "s"}</h2>
           {results.length === 0 ? (
             <EmptyState message="No matching documents." />
           ) : (
             <div className="space-y-2">
               {results.map((doc) => (
-                <div key={doc.id} className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-slate-200 px-4 py-3 text-sm">
+                <div key={doc.id} className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-slate-200 px-4 py-3 text-sm dark:border-slate-700">
                   <div className="min-w-0">
-                    <div className="truncate font-medium text-slate-900">{doc.name}</div>
-                    <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-slate-400">
+                    <div className="truncate font-medium text-slate-900 dark:text-slate-100">{doc.name}</div>
+                    <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-slate-400 dark:text-slate-500">
                       <span>{formatBytes(doc.file_size)}</span>
                       <span>{formatDate(doc.created_at)}</span>
                       {doc.document_type && <Badge>{doc.document_type}</Badge>}
@@ -116,7 +116,7 @@ function SearchBody() {
                     href={api.downloadUrl(doc.id)}
                     target="_blank"
                     rel="noreferrer"
-                    className="shrink-0 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                    className="shrink-0 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
                   >
                     Download
                   </a>

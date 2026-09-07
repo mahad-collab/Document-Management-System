@@ -17,7 +17,28 @@ import type {
   UUID,
 } from "./types";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+// In the browser, talk to the backend on the SAME host the page itself was
+// loaded from — this is what makes the app work identically whether you
+// open it as localhost or as a LAN IP from another device: the browser's
+// own address bar host is always reachable from that browser, whereas a
+// hardcoded "localhost" wouldn't be (a phone hitting
+// NEXT_PUBLIC_API_URL=http://localhost:8000 would try ITS OWN localhost,
+// which has nothing running).
+//
+// Two backend instances run side by side in dev: plain HTTP on :8000 for
+// localhost, and HTTPS on :8443 for LAN access — Entra ID's OAuth redirect
+// URI must be either "https://" or exactly "http://localhost", so a LAN IP
+// can only ever work over HTTPS (see backend/certs/ for the self-signed
+// cert covering these LAN addresses). NEXT_PUBLIC_API_URL remains a
+// fallback for server-side rendering, where there is no window.
+const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1"]);
+
+const API_URL =
+  typeof window !== "undefined"
+    ? LOCAL_HOSTS.has(window.location.hostname)
+      ? `http://${window.location.hostname}:8000`
+      : `https://${window.location.hostname}:8443`
+    : process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export class ApiError extends Error {
   status: number;
@@ -127,8 +148,15 @@ export const api = {
 
   // ---- Users ----
   listUsers: (departmentId?: UUID) => request<AppUser[]>(`/users${qs({ department_id: departmentId })}`),
+  createUser: (payload: { email: string; display_name: string; job_title?: string }) =>
+    request<AppUser>("/users", { method: "POST", body: JSON.stringify(payload) }),
+  updateUser: (id: UUID, payload: { display_name?: string; job_title?: string; is_active?: boolean }) =>
+    request<AppUser>(`/users/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
+  deleteUser: (id: UUID) => request<void>(`/users/${id}`, { method: "DELETE" }),
   assignRole: (payload: { user_id: UUID; role: RoleName; department_id?: UUID | null }) =>
     request<RoleAssignment>("/users/role-assignments", { method: "POST", body: JSON.stringify(payload) }),
+  removeRoleAssignment: (assignmentId: UUID) =>
+    request<void>(`/users/role-assignments/${assignmentId}`, { method: "DELETE" }),
 
   // ---- Dashboard ----
   dashboard: (departmentId?: UUID) => request<Dashboard>(`/dashboard${qs({ department_id: departmentId })}`),

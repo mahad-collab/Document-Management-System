@@ -21,10 +21,10 @@ export default function Nav() {
 
   if (!user) {
     return (
-      <header className="border-b border-slate-200 bg-white">
+      <header className="border-b border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-4 sm:px-6">
           <Image src="/Puma_Energy_Logo.jpg" alt="Puma Energy" width={132} height={24} priority />
-          <span className="text-lg font-semibold text-slate-900">Puma DMS</span>
+          <span className="text-lg font-semibold text-slate-900 dark:text-slate-100">Puma DMS</span>
         </div>
       </header>
     );
@@ -33,11 +33,11 @@ export default function Nav() {
   const visibleLinks = LINKS.filter((l) => !l.superAdminOnly || user.is_super_admin);
 
   return (
-    <header className="border-b border-slate-200 bg-white">
+    <header className="border-b border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-4 py-3 sm:px-6">
         <Link href="/dashboard" className="flex shrink-0 items-center gap-2">
           <Image src="/Puma_Energy_Logo.jpg" alt="Puma Energy" width={99} height={18} />
-          <span className="text-lg font-semibold text-slate-900">Puma DMS</span>
+          <span className="text-lg font-semibold text-slate-900 dark:text-slate-100">Puma DMS</span>
         </Link>
 
         <nav className="flex flex-wrap gap-1 text-sm">
@@ -48,7 +48,9 @@ export default function Nav() {
                 key={l.href}
                 href={l.href}
                 className={`rounded-md px-3 py-1.5 font-medium transition-colors ${
-                  active ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100"
+                  active
+                    ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900"
+                    : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
                 }`}
               >
                 {l.label}
@@ -62,7 +64,7 @@ export default function Nav() {
             <select
               value={selectedDepartmentId ?? ""}
               onChange={(e) => setSelectedDepartmentId(e.target.value || null)}
-              className="rounded-md border border-slate-300 bg-white px-2 py-1.5 text-sm"
+              className="rounded-md border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
               title="Active department — most pages act within this department"
             >
               {departments.map((d) => (
@@ -72,10 +74,10 @@ export default function Nav() {
               ))}
             </select>
           )}
-          <span className="hidden text-sm text-slate-500 sm:inline">
+          <span className="hidden text-sm text-slate-500 dark:text-slate-400 sm:inline">
             {user.display_name}
             {user.is_super_admin && (
-              <span className="ml-1.5 rounded bg-amber-100 px-1.5 py-0.5 text-xs font-medium text-amber-800">
+              <span className="ml-1.5 rounded bg-amber-100 px-1.5 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900 dark:text-amber-300">
                 Super Admin
               </span>
             )}
@@ -85,7 +87,7 @@ export default function Nav() {
               await logout();
               router.push("/");
             }}
-            className="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100"
+            className="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800"
           >
             Log out
           </button>

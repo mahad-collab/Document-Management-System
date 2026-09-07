@@ -62,11 +62,20 @@ export interface DocumentVersion {
 
 export type RoleName = "super_admin" | "department_admin" | "department_user" | "read_only";
 
+export interface UserRoleDetail {
+  id: UUID;
+  role: RoleName;
+  department_id: UUID | null;
+  department_name: string | null;
+}
+
 export interface AppUser {
   id: UUID;
   email: string;
   display_name: string;
+  job_title: string | null;
   is_active: boolean;
+  roles: UserRoleDetail[];
 }
 
 export interface RoleAssignment {

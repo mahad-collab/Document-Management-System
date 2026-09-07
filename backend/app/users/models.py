@@ -22,7 +22,13 @@ class User(UUIDPrimaryKeyMixin, TimestampMixin, SoftDeleteMixin, Base):
 
     # Microsoft Entra ID's immutable object ID for this user — this, not
     # email, is the durable identity key (emails can be renamed in Entra).
-    entra_object_id: Mapped[str] = mapped_column(String(100), unique=True, nullable=False, index=True)
+    # Nullable: a Super Admin can pre-provision a user record (email +
+    # display name, no roles yet) before that person's first real login.
+    # The OAuth callback backfills this the first time they actually sign
+    # in, matching the pre-provisioned row by email instead of creating a
+    # duplicate. Postgres allows multiple NULLs under the unique index, so
+    # any number of not-yet-logged-in users can coexist.
+    entra_object_id: Mapped[Optional[str]] = mapped_column(String(100), unique=True, nullable=True, index=True)
 
     email: Mapped[str] = mapped_column(String(320), unique=True, nullable=False, index=True)
     display_name: Mapped[str] = mapped_column(String(200), nullable=False)

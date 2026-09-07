@@ -1,26 +1,11 @@
 @import "tailwindcss";
 
+/* Tells the browser this page genuinely supports both themes, so native
+   bits it draws itself (scrollbars, form control chrome, the default
+   canvas behind the page) follow the same mode as the rest of the UI
+   instead of always assuming light. The actual colors below are all
+   driven by Tailwind's dark: variant (system-preference based by
+   default), applied directly on each element. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color-scheme: light dark;
 }

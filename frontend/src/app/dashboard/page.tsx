@@ -12,8 +12,8 @@ import Link from "next/link";
 function Stat({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <Card>
-      <div className="text-xs font-medium uppercase tracking-wide text-slate-500">{label}</div>
-      <div className="mt-1 text-2xl font-semibold text-slate-900">{value}</div>
+      <div className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</div>
+      <div className="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-100">{value}</div>
     </Card>
   );
 }
@@ -47,20 +47,20 @@ function DashboardBody() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-semibold text-slate-900">
-          Dashboard {!orgWide && selectedDepartment && <span className="text-slate-400">— {selectedDepartment.name}</span>}
+        <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
+          Dashboard {!orgWide && selectedDepartment && <span className="text-slate-400 dark:text-slate-500">— {selectedDepartment.name}</span>}
         </h1>
         {user!.is_super_admin && (
-          <div className="flex rounded-md border border-slate-300 bg-white p-0.5 text-sm">
+          <div className="flex rounded-md border border-slate-300 bg-white p-0.5 text-sm dark:border-slate-600 dark:bg-slate-800">
             <button
               onClick={() => setOrgWide(true)}
-              className={`rounded px-3 py-1 ${orgWide ? "bg-slate-900 text-white" : "text-slate-600"}`}
+              className={`rounded px-3 py-1 ${orgWide ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900" : "text-slate-600 dark:text-slate-300"}`}
             >
               Org-wide
             </button>
             <button
               onClick={() => setOrgWide(false)}
-              className={`rounded px-3 py-1 ${!orgWide ? "bg-slate-900 text-white" : "text-slate-600"}`}
+              className={`rounded px-3 py-1 ${!orgWide ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900" : "text-slate-600 dark:text-slate-300"}`}
             >
               This department
             </button>
@@ -72,7 +72,7 @@ function DashboardBody() {
       {loading && <Spinner />}
 
       {!loading && !error && !orgWide && !selectedDepartmentId && (
-        <div className="rounded-md border border-dashed border-slate-300 px-4 py-8 text-center text-sm text-slate-400">
+        <div className="rounded-md border border-dashed border-slate-300 px-4 py-8 text-center text-sm text-slate-400 dark:border-slate-700 dark:text-slate-500">
           No department selected — pick one from the top bar.
         </div>
       )}
@@ -92,12 +92,12 @@ function DashboardBody() {
           </div>
 
           <Card>
-            <h2 className="mb-3 text-sm font-semibold text-slate-900">Documents by department</h2>
+            <h2 className="mb-3 text-sm font-semibold text-slate-900 dark:text-slate-100">Documents by department</h2>
             <div className="space-y-2">
               {data.department_document_counts.map((d) => (
                 <div key={d.department_id} className="flex items-center justify-between text-sm">
-                  <span className="text-slate-600">{d.department_name}</span>
-                  <span className="font-medium text-slate-900">{d.document_count}</span>
+                  <span className="text-slate-600 dark:text-slate-300">{d.department_name}</span>
+                  <span className="font-medium text-slate-900 dark:text-slate-100">{d.document_count}</span>
                 </div>
               ))}
             </div>
@@ -105,11 +105,11 @@ function DashboardBody() {
 
           <div className="grid gap-4 sm:grid-cols-2">
             <Card>
-              <h2 className="mb-3 text-sm font-semibold text-slate-900">Recent uploads</h2>
+              <h2 className="mb-3 text-sm font-semibold text-slate-900 dark:text-slate-100">Recent uploads</h2>
               <RecentList items={data.recent_uploads} />
             </Card>
             <Card>
-              <h2 className="mb-3 text-sm font-semibold text-slate-900">Recently deleted</h2>
+              <h2 className="mb-3 text-sm font-semibold text-slate-900 dark:text-slate-100">Recently deleted</h2>
               <RecentList items={data.recent_deleted} />
             </Card>
           </div>
@@ -124,7 +124,7 @@ function DashboardBody() {
             <Stat label="Pending OCR" value={data.pending_ocr} />
           </div>
           <Card>
-            <h2 className="mb-3 text-sm font-semibold text-slate-900">Recent uploads</h2>
+            <h2 className="mb-3 text-sm font-semibold text-slate-900 dark:text-slate-100">Recent uploads</h2>
             <RecentList items={data.recent_uploads} />
           </Card>
         </>
@@ -134,12 +134,12 @@ function DashboardBody() {
 }
 
 function RecentList({ items }: { items: { id: string; name: string; created_at: string }[] }) {
-  if (items.length === 0) return <p className="text-sm text-slate-400">Nothing yet.</p>;
+  if (items.length === 0) return <p className="text-sm text-slate-400 dark:text-slate-500">Nothing yet.</p>;
   return (
     <ul className="space-y-2">
       {items.map((i) => (
         <li key={i.id} className="flex items-center justify-between text-sm">
-          <Link href="/documents" className="truncate text-slate-700 hover:underline">
+          <Link href="/documents" className="truncate text-slate-700 hover:underline dark:text-slate-300">
             {i.name}
           </Link>
           <Badge>{formatDate(i.created_at)}</Badge>
