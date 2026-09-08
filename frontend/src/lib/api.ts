@@ -18,27 +18,41 @@ import type {
 } from "./types";
 
 // In the browser, talk to the backend on the SAME host the page itself was
-// loaded from — this is what makes the app work identically whether you
-// open it as localhost or as a LAN IP from another device: the browser's
-// own address bar host is always reachable from that browser, whereas a
-// hardcoded "localhost" wouldn't be (a phone hitting
-// NEXT_PUBLIC_API_URL=http://localhost:8000 would try ITS OWN localhost,
-// which has nothing running).
+// loaded from when we're in local/LAN dev — this is what makes the app work
+// identically whether opened as localhost or as a LAN IP from another
+// device, without hardcoding one address. Two backend instances run side by
+// side in dev: plain HTTP on :8000 for localhost, HTTPS on :8443 for LAN
+// (Entra's redirect-URI rule requires https:// for anything but localhost —
+// see backend/certs/ for the self-signed cert covering these LAN addresses).
 //
-// Two backend instances run side by side in dev: plain HTTP on :8000 for
-// localhost, and HTTPS on :8443 for LAN access — Entra ID's OAuth redirect
-// URI must be either "https://" or exactly "http://localhost", so a LAN IP
-// can only ever work over HTTPS (see backend/certs/ for the self-signed
-// cert covering these LAN addresses). NEXT_PUBLIC_API_URL remains a
-// fallback for server-side rendering, where there is no window.
+// On a real deployment (e.g. this app on Vercel), the frontend and backend
+// are on entirely different domains (Vercel vs. Render), so there's no
+// "same host, different port" to guess — NEXT_PUBLIC_API_URL must be set
+// explicitly in the Vercel project's environment variables to the backend's
+// real URL. That env var is baked in at build time, so changing it requires
+// a redeploy, same as any other Next.js public env var.
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1"]);
+const LAN_HOST_RE = /^(10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3})$/;
 
-const API_URL =
-  typeof window !== "undefined"
-    ? LOCAL_HOSTS.has(window.location.hostname)
-      ? `http://${window.location.hostname}:8000`
-      : `https://${window.location.hostname}:8443`
-    : process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+function resolveApiUrl(): string {
+  if (typeof window === "undefined") {
+    return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  }
+  const host = window.location.hostname;
+  if (LOCAL_HOSTS.has(host)) return `http://${host}:8000`;
+  if (LAN_HOST_RE.test(host)) return `https://${host}:8443`;
+  if (!process.env.NEXT_PUBLIC_API_URL) {
+    // Fails loudly instead of silently hitting the wrong host — a missing
+    // env var on a real deployment should be obvious immediately, not
+    // manifest as mysterious network errors on every API call.
+    throw new Error(
+      "NEXT_PUBLIC_API_URL is not set. On a real deployment this must point at the backend's URL (e.g. https://puma-dms-backend.onrender.com)."
+    );
+  }
+  return process.env.NEXT_PUBLIC_API_URL;
+}
+
+const API_URL = resolveApiUrl();
 
 export class ApiError extends Error {
   status: number;

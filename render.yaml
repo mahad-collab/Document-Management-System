@@ -1,0 +1,49 @@
+# Render Blueprint — deploys the FastAPI backend as a Docker web service.
+# Connect this repo at dashboard.render.com/select-repo and Render will find
+# this file automatically ("New +" -> "Blueprint").
+#
+# `sync: false` env vars are secrets — Render will prompt for each one in
+# the dashboard during setup and never store them in this file/git. Every
+# other value below is safe to commit (URLs, not credentials).
+services:
+  - type: web
+    name: puma-dms-backend
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_SECRET_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_URL_SYNC
+        sync: false
+      - key: ENTRA_TENANT_ID
+        sync: false
+      - key: ENTRA_CLIENT_ID
+        sync: false
+      - key: ENTRA_CLIENT_SECRET
+        sync: false
+      # Update these two once the real onrender.com / vercel.app URLs are
+      # known after first deploy — Render/Vercel both pick the final
+      # subdomain (or a suffixed variant if the name is taken).
+      - key: ENTRA_REDIRECT_URI
+        value: https://puma-dms-backend.onrender.com/auth/callback
+      - key: ENTRA_SCOPES
+        value: User.Read
+      - key: GRAPH_SITE_ID
+        sync: false
+      - key: GRAPH_DRIVE_ID
+        sync: false
+      - key: FRONTEND_URL
+        value: https://puma-dms.vercel.app
+      - key: BACKEND_CORS_ORIGINS
+        value: '["https://puma-dms.vercel.app"]'
+      - key: SESSION_COOKIE_NAME
+        value: puma_dms_session
+      - key: SESSION_EXPIRE_MINUTES
+        value: "480"
