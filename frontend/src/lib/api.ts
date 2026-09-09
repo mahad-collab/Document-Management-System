@@ -33,6 +33,10 @@ import type {
 // a redeploy, same as any other Next.js public env var.
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1"]);
 const LAN_HOST_RE = /^(10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3})$/;
+// This machine's mDNS name (see backend/app/auth/routes.py's _MDNS_HOST_RE)
+// — resolves to whatever this machine's current address is on ANY network,
+// so a link built on this hostname never goes stale when the network changes.
+const MDNS_HOST_RE = /^[a-z0-9-]+\.local$/i;
 
 function resolveApiUrl(): string {
   if (typeof window === "undefined") {
@@ -40,7 +44,7 @@ function resolveApiUrl(): string {
   }
   const host = window.location.hostname;
   if (LOCAL_HOSTS.has(host)) return `http://${host}:8000`;
-  if (LAN_HOST_RE.test(host)) return `https://${host}:8443`;
+  if (LAN_HOST_RE.test(host) || MDNS_HOST_RE.test(host)) return `https://${host}:8443`;
   if (!process.env.NEXT_PUBLIC_API_URL) {
     // Fails loudly instead of silently hitting the wrong host — a missing
     // env var on a real deployment should be obvious immediately, not

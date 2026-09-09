@@ -31,17 +31,27 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 settings = get_settings()
 
 # Same private-address allowlist as main.py's CORS regex — lets the OAuth
-# dance work whether the browser reached this server via localhost or a LAN
-# IP (phone/laptop on the same network), without trusting an arbitrary
-# Host header for the redirect target (open-redirect guard). Every address
-# actually used here must ALSO be added as a Redirect URI in the Entra ID
-# App Registration (Entra admin center -> App registrations -> Authentication)
-# — Microsoft rejects any redirect_uri it doesn't already know about.
+# dance work whether the browser reached this server via localhost, a LAN
+# IP, or this machine's mDNS hostname (phone/laptop on the same network),
+# without trusting an arbitrary Host header for the redirect target (open-
+# redirect guard). Every address actually used here must ALSO be added as a
+# Redirect URI in the Entra ID App Registration (Entra admin center ->
+# App registrations -> Authentication) — Microsoft rejects any redirect_uri
+# it doesn't already know about. The .local hostname is the one worth
+# registering permanently: mDNS resolves it to whatever this machine's
+# current address is on any given network, so unlike a raw LAN IP (which
+# changes every time the network changes), this one redirect URI keeps
+# working indefinitely without ever needing to be re-added.
 _LOCAL_HOSTS = {"localhost", "127.0.0.1"}
 _LAN_HOST_RE = re.compile(
     r"^(10\.\d{1,3}\.\d{1,3}\.\d{1,3}|"
     r"172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3})$"
 )
+_MDNS_HOST_RE = re.compile(r"^[a-z0-9-]+\.local$", re.IGNORECASE)
+
+
+def _is_recognized_dev_host(host: str) -> bool:
+    return host in _LOCAL_HOSTS or bool(_LAN_HOST_RE.match(host)) or bool(_MDNS_HOST_RE.match(host))
 
 
 def _msal_app() -> msal.ConfidentialClientApplication:
@@ -59,7 +69,7 @@ def _redirect_uri_for(request: Request) -> str:
     provided both are registered redirect URIs in Entra. Falls back to the
     configured static value for any host outside the private allowlist."""
     host = request.url.hostname or ""
-    if settings.APP_ENV == "development" and (host in _LOCAL_HOSTS or _LAN_HOST_RE.match(host)):
+    if settings.APP_ENV == "development" and _is_recognized_dev_host(host):
         port = request.url.port or 8000
         return f"{request.url.scheme}://{host}:{port}/auth/callback"
     return settings.ENTRA_REDIRECT_URI
@@ -84,7 +94,7 @@ def _frontend_url_for(request: Request) -> str:
         return settings.FRONTEND_URL
     if host in _LOCAL_HOSTS:
         return f"http://{host}:3000"
-    if _LAN_HOST_RE.match(host):
+    if _LAN_HOST_RE.match(host) or _MDNS_HOST_RE.match(host):
         return f"https://{host}:3443"
     return settings.FRONTEND_URL
 

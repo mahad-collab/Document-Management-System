@@ -6,7 +6,21 @@ const nextConfig: NextConfig = {
   // app from a LAN IP loads the initial HTML fine but the dev-server's own
   // HMR websocket (and some internal RSC requests) get rejected, which is
   // exactly the "WebSocket handshake failed" error this was added for.
-  allowedDevOrigins: ["10.58.1.64", "192.168.11.1", "192.168.18.178", "localhost", "127.0.0.1"],
+  // "desktop-3e2t2nd.local" resolves via mDNS to this machine's current
+  // address on whatever network it's on — added once here, it keeps
+  // working across every future network change without editing this list
+  // again. The raw IPs below are kept only for networks where mDNS
+  // resolution might not work (e.g. client-isolated guest Wi-Fi).
+  allowedDevOrigins: [
+    "desktop-3e2t2nd.local",
+    "10.58.1.64",
+    "192.168.11.1",
+    "192.168.18.178",
+    "192.168.0.107",
+    "10.58.1.242",
+    "localhost",
+    "127.0.0.1",
+  ],
   // Next only allows one dev server per build directory (a lock file
   // enforces it) — running a second instance (the HTTPS one on :3443, for
   // LAN access) needs its own distDir so it doesn't collide with the

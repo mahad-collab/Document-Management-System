@@ -39,16 +39,18 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.BACKEND_CORS_ORIGINS,
     # Also accept the frontend dev server reached over localhost (plain
-    # HTTP, :3000) or over LAN (HTTPS, :3443 — must be https: schemeful
-    # same-site means the LAN frontend and LAN backend have to share a
-    # scheme for the session cookie to survive a fetch() between them, see
-    # app/auth/routes.py's _frontend_url_for). Dev-only convenience (see
-    # APP_ENV check below); a deployed instance should rely on
-    # BACKEND_CORS_ORIGINS alone with its real origin(s).
+    # HTTP, :3000) or over LAN — by IP or by this machine's mDNS hostname
+    # (HTTPS, :3443 — must be https: schemeful same-site means the LAN
+    # frontend and LAN backend have to share a scheme for the session
+    # cookie to survive a fetch() between them, see app/auth/routes.py's
+    # _frontend_url_for). Dev-only convenience (see APP_ENV check below);
+    # a deployed instance should rely on BACKEND_CORS_ORIGINS alone with
+    # its real origin(s).
     allow_origin_regex=(
         r"^(http://(localhost|127\.0\.0\.1):3000|"
         r"https://(10\.\d{1,3}\.\d{1,3}\.\d{1,3}|"
-        r"172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}):3443)$"
+        r"172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|"
+        r"[a-zA-Z0-9-]+\.local):3443)$"
     )
     if settings.APP_ENV == "development"
     else None,
